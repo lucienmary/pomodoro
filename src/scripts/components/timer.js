@@ -7,7 +7,7 @@ const timeset = {
 var position = {
     longBreakCount: 1,
     shortBreakCount: 4,
-    pomodoro: 4
+    pomodoroCount: 4
 }
 
 var active = false;
@@ -92,8 +92,8 @@ function timerLoop(){
                     document.getElementById('seconds').innerHTML = '00';
                 }else{
                     step = 'longBreak';
-                    position.shortBreakCount == 4;
-                    position.pomodoro == 4;
+                    position.shortBreakCount = 4;
+                    position.pomodoroCount = 4;
                     document.getElementById('minutes').innerHTML = timeset.longBreak;
                     document.getElementById('seconds').innerHTML = '00';
                 }
