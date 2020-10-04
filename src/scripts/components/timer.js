@@ -1,40 +1,33 @@
 const timeset = {
-    longBreak: 3,
+    longBreak: 1,
     shortBreak: 1,
-    pomodoro: 2
+    pomodoro: 1
 };
 
 var position = {
     longBreakCount: 1,
-    shortBreakCount: 4,
+    shortBreakCount: 3,
     pomodoroCount: 4
 }
 
 var active = false;
+
+var completed = 0;
 
 var step = 'pomodoro';
 
 export function timer () {
 
     document.getElementById('play').addEventListener('click', () => {
-        if (active == false) {
-            console.log('Play');
-            timerLoop();
-        }
+        if (active == false) timerLoop();
     })
 
     document.getElementById('stop').addEventListener('click', () => {
-        if (active == false) {
-            console.log('Stop');
-            timerLoop();
-        }
+        if (active == false) timerLoop();
     })
 
     document.getElementById('reset').addEventListener('click', () => {
-        if (active == false) {
-            console.log('Reset');
-            timerLoop();
-        }
+        if (active == false) timerLoop();
     })
 
 }
@@ -45,17 +38,14 @@ function timerLoop(){
     var seconds = -1;
     switch (step) {
         case 'pomodoro':
-            console.log('go p');
             minutes = timeset.pomodoro;
             counter();
             break;
         case 'longBreak':
-            console.log('go l');
             minutes = timeset.longBreak;
             counter();
             break;
         case 'shortBreak':
-            console.log('go s');
             minutes = timeset.shortBreak;
             counter();
             break;
@@ -73,38 +63,67 @@ function timerLoop(){
         if (seconds > -1) {
             setTimeout(function() {
 
-            document.getElementById('minutes').innerHTML = minutes;
-            document.getElementById('seconds').innerHTML = seconds;
+            document.getElementById('outputTimer').innerHTML = clockView();
+
+            document.querySelector('title').innerHTML = '[ '+ clockView() +' ] Compteur pomodoro ⏲️';
 
             seconds--;
             counter();
             }, 1000);
         }else{
-            console.log('Timeout!');
-
             active = false;
 
             if (step === 'pomodoro') {
+
+                completed++;
+                document.getElementById('completed').innerHTML = completed;
+                document.getElementById('pomodoroRest').innerHTML = 4 - completed % 4;
+
                 if (position.shortBreakCount > 0) {
                     step = 'shortBreak';
+                    document.querySelector('h1').innerHTML = 'Courte pause';
                     position.shortBreakCount--;
-                    document.getElementById('minutes').innerHTML = timeset.shortBreak;
-                    document.getElementById('seconds').innerHTML = '00';
+
+                    minutes = timeset.shortBreak;
+                    seconds = '0';
+                    document.getElementById('outputTimer').innerHTML = clockView();
                 }else{
                     step = 'longBreak';
                     position.shortBreakCount = 4;
                     position.pomodoroCount = 4;
-                    document.getElementById('minutes').innerHTML = timeset.longBreak;
-                    document.getElementById('seconds').innerHTML = '00';
+                    document.querySelector('h1').innerHTML = 'Longue pause';
+
+                    minutes = timeset.longBreak;
+                    seconds = '0';
+                    document.getElementById('outputTimer').innerHTML = clockView();
                 }
             }else if (step === 'longBreak' || step === 'shortBreak') {
                 step = 'pomodoro';
-                document.getElementById('minutes').innerHTML = timeset.pomodoro;
-                document.getElementById('seconds').innerHTML = '00';
-            }
+                document.querySelector('h1').innerHTML = 'Pomodoro';
 
-            console.log('Step:' + step);
+                minutes = timeset.pomodoro;
+                seconds = '0';
+                document.getElementById('outputTimer').innerHTML = clockView();
+            }
         }
+    }
+
+    function clockView() {
+
+        if (minutes >= 10) {
+            if (seconds >= 10) {
+                var test = minutes + ':' + seconds;
+            }else{
+                var test = minutes + ':0' + seconds;
+            }
+        }else{
+            if (seconds >= 10) {
+                var test = '0' + minutes + ':' + seconds;
+            }else{
+                var test = '0' + minutes + ':0' + seconds;
+            }
+        }
+        return test;
     }
 
 }

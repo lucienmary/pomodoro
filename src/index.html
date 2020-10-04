@@ -4,18 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Pomodoro</title>
+    <title style="color:blue">[ 00:00 ] Pomodoro ⏲️</title>
     <link rel="stylesheet" type="text/css" href="/styles/app.css">
+
+    <meta name="theme-color" content="#33363b">
 </head>
 <body>
     <h1>Pomodoro</h1>
 
     <div class="">
-        <p id="outputTimer">00:<span id="minutes">25</span>:<span id="seconds">00</span></p>
+        <p id="outputTimer">00:00</p>
 
         <button id="play">Play</button>
         <button id="stop">Stop</button>
         <button id="reset">Réinitialiser</button>
+    </div>
+
+    <div class="">
+        <p>Pomodoro avant longue pause: <span id="pomodoroRest">4</span></p>
+        <p>Pomodoro déjà complété: <span id="completed">0</span></p>
     </div>
 
     <script src="/scripts/app.js"></script>
