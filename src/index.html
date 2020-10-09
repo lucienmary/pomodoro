@@ -6,24 +6,27 @@
 
     <title style="color:blue">[ 00:00 ] Pomodoro ⏲️</title>
     <link rel="stylesheet" type="text/css" href="/styles/app.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 
     <meta name="theme-color" content="#33363b">
 </head>
 <body>
-    <h1>Pomodoro</h1>
+    <main>
+        <h1>Pomodoro</h1>
+        <p id="outputTimer">25:00</p>
 
-    <div class="">
-        <p id="outputTimer">00:00</p>
+        <div class="navbar">
+            <button id="play">Play</button>
+            <button id="stop" disabled>Stop</button>
+            <button id="reset">Réinitialiser</button>
+        </div>
 
-        <button id="play">Play</button>
-        <button id="stop">Stop</button>
-        <button id="reset">Réinitialiser</button>
-    </div>
-
-    <div class="">
-        <p>Pomodoro avant longue pause: <span id="pomodoroRest">4</span></p>
-        <p>Pomodoro déjà complété: <span id="completed">0</span></p>
-    </div>
+        <div class="infos">
+            <p>Pomodoro avant longue pause: <span id="pomodoroRest">4</span></p>
+            <p>Pomodoro déjà complété: <span id="completed">0</span></p>
+            <p>Pomodoro depuis toujours: <span id="completedAllTime">0</span></p>
+        </div>
+    </main>
 
     <script src="/scripts/app.js"></script>
 </body>

@@ -1,6 +1,6 @@
 const timeset = {
-    longBreak: 1,
-    shortBreak: 1,
+    longBreak: 10,
+    shortBreak: 5,
     pomodoro: 1
 };
 
@@ -11,45 +11,94 @@ var position = {
 }
 
 var active = false;
+var isPaused = false;
 
 var completed = 0;
 
 var step = 'pomodoro';
 
+var minutes;
+var seconds;
+var minutesRescue;
+var secondsRescue;
+
+var completedAllTime;
+
+if (localStorage.getItem("completedAllTime") === null) {
+    completedAllTime = localStorage.setItem("completedAllTime", 0);
+}else {
+    completedAllTime = localStorage.getItem('completedAllTime');
+}
+
+console.log(completedAllTime);
+
 export function timer () {
 
     document.getElementById('play').addEventListener('click', () => {
-        if (active == false) timerLoop();
+
+        document.getElementById('play').disabled = true;
+        document.getElementById('stop').disabled = false;
+
+        if (isPaused == false) timerLoop();
+        else{
+            minutes = minutesRescue;
+            seconds = secondsRescue;
+            timerLoop();
+        }
     })
 
     document.getElementById('stop').addEventListener('click', () => {
-        if (active == false) timerLoop();
+        document.getElementById('play').disabled = false;
+        document.getElementById('stop').disabled = true;
+
+        if (minutesRescue == null) {
+            minutesRescue = minutes;
+            secondsRescue = seconds;
+            minutes  = 0;
+            seconds = 0;
+
+            isPaused = true;
+        }
+
+        console.log('Time: '+ minutesRescue +':'+ secondsRescue);
     })
 
     document.getElementById('reset').addEventListener('click', () => {
-        if (active == false) timerLoop();
+        reset();
     })
 
 }
 
 function timerLoop(){
     active = true;
-    var minutes;
-    var seconds = -1;
-    switch (step) {
-        case 'pomodoro':
-            minutes = timeset.pomodoro;
-            counter();
-            break;
-        case 'longBreak':
-            minutes = timeset.longBreak;
-            counter();
-            break;
-        case 'shortBreak':
-            minutes = timeset.shortBreak;
-            counter();
-            break;
-        default: minutes = timeset.pomodoro;
+    minutes;
+    seconds = -1;
+
+    if (isPaused == false) {
+        switch (step) {
+            case 'pomodoro':
+                minutes = timeset.pomodoro;
+                counter();
+                break;
+            case 'longBreak':
+                minutes = timeset.longBreak;
+                counter();
+                break;
+            case 'shortBreak':
+                minutes = timeset.shortBreak;
+                counter();
+                break;
+            default: minutes = timeset.pomodoro;
+        }
+    }else{
+        minutes = minutesRescue;
+        seconds = secondsRescue;
+
+        minutesRescue = null;
+        secondsRescue = null;
+        counter();
+
+        isPaused = false;
     }
 
     function counter(){
@@ -73,57 +122,86 @@ function timerLoop(){
         }else{
             active = false;
 
-            if (step === 'pomodoro') {
+            if (isPaused == false) {
+                if (step === 'pomodoro') {
 
-                completed++;
-                document.getElementById('completed').innerHTML = completed;
-                document.getElementById('pomodoroRest').innerHTML = 4 - completed % 4;
+                    document.getElementById('stop').disabled = true;
+                    document.getElementById('play').disabled = false;
 
-                if (position.shortBreakCount > 0) {
-                    step = 'shortBreak';
-                    document.querySelector('h1').innerHTML = 'Courte pause';
-                    position.shortBreakCount--;
+                    completedAllTime++;
+                    completedAllTime = localStorage.setItem("completedAllTime", completedAllTime);
 
-                    minutes = timeset.shortBreak;
-                    seconds = '0';
-                    document.getElementById('outputTimer').innerHTML = clockView();
-                }else{
-                    step = 'longBreak';
-                    position.shortBreakCount = 4;
-                    position.pomodoroCount = 4;
-                    document.querySelector('h1').innerHTML = 'Longue pause';
+                    completed++;
+                    document.getElementById('completedAllTime').innerHTML = localStorage.getItem("completedAllTime");
+                    document.getElementById('completed').innerHTML = completed;
+                    document.getElementById('pomodoroRest').innerHTML = 4 - completed % 4;
 
-                    minutes = timeset.longBreak;
+                    if (position.shortBreakCount > 0) {
+                        step = 'shortBreak';
+                        document.querySelector('h1').innerHTML = 'Courte pause';
+                        position.shortBreakCount--;
+
+                        minutes = timeset.shortBreak;
+                        seconds = '0';
+                        document.getElementById('outputTimer').innerHTML = clockView();
+                    }else{
+                        step = 'longBreak';
+                        position.shortBreakCount = 4;
+                        position.pomodoroCount = 4;
+                        document.querySelector('h1').innerHTML = 'Longue pause';
+
+                        minutes = timeset.longBreak;
+                        seconds = '0';
+                        document.getElementById('outputTimer').innerHTML = clockView();
+                    }
+                }else if (step === 'longBreak' || step === 'shortBreak') {
+                    step = 'pomodoro';
+                    document.querySelector('h1').innerHTML = 'Pomodoro';
+
+                    minutes = timeset.pomodoro;
                     seconds = '0';
                     document.getElementById('outputTimer').innerHTML = clockView();
                 }
-            }else if (step === 'longBreak' || step === 'shortBreak') {
-                step = 'pomodoro';
-                document.querySelector('h1').innerHTML = 'Pomodoro';
-
-                minutes = timeset.pomodoro;
-                seconds = '0';
-                document.getElementById('outputTimer').innerHTML = clockView();
             }
         }
     }
 
     function clockView() {
 
-        if (minutes >= 10) {
-            if (seconds >= 10) {
-                var test = minutes + ':' + seconds;
+        if (isPaused == false) {
+            if (minutes >= 10) {
+                if (seconds >= 10) {
+                    var test = minutes + ':' + seconds;
+                }else{
+                    var test = minutes + ':0' + seconds;
+                }
             }else{
-                var test = minutes + ':0' + seconds;
+                if (seconds >= 10) {
+                    var test = '0' + minutes + ':' + seconds;
+                }else{
+                    var test = '0' + minutes + ':0' + seconds;
+                }
             }
         }else{
-            if (seconds >= 10) {
-                var test = '0' + minutes + ':' + seconds;
+            if (minutesRescue >= 10) {
+                if (secondsRescue >= 10) {
+                    var test = minutesRescue + ':' + secondsRescue;
+                }else{
+                    var test = minutesRescue + ':0' + secondsRescue;
+                }
             }else{
-                var test = '0' + minutes + ':0' + seconds;
+                if (secondsRescue >= 10) {
+                    var test = '0' + minutesRescue + ':' + secondsRescue;
+                }else{
+                    var test = '0' + minutesRescue + ':0' + secondsRescue;
+                }
             }
         }
         return test;
     }
 
+}
+
+function reset(){
+    window.location.reload();
 }

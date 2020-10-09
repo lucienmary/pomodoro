@@ -1,8 +1,45 @@
 body {
   background: $c-bg;
-  font-family: sans-serif;
+  font-family: 'Lato', sans-serif;
 }
 
 h1 {
   color: $c-alt;
+  text-align: center;
+  text-shadow: 0px 2px 3px #141516;
+}
+
+#outputTimer{
+    font-size: 5rem;
+    font-weight: 900;
+    color: #d0cedc;
+    text-align: center;
+    text-shadow: 0px 3px 6px #141516;
+}
+
+.navbar{
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+.infos{
+    margin-top: 150px;
+    text-align: center;
+}
+
+p{
+    color: grey;
+}
+main{
+    width: 414px;
+    margin: auto;
+}
+
+button{
+    background-color: $c-alt;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 3px;
+    box-shadow: 0px 2px 3px #141516;
 }
