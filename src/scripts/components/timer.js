@@ -123,6 +123,9 @@ function timerLoop(){
             active = false;
 
             if (isPaused == false) {
+
+                new Audio('../assets/sound/boxe.mp3').play()
+
                 if (step === 'pomodoro') {
 
                     document.getElementById('stop').disabled = true;
